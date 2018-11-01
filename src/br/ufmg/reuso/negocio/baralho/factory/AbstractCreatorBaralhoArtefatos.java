@@ -4,6 +4,6 @@ import br.ufmg.reuso.negocio.baralho.BaralhoArtefatos;
 
 public interface AbstractCreatorBaralhoArtefatos {
 
-	public abstract BaralhoArtefatos getBaralho(String pTipoBaralho, Integer pNumeroArtefatosAtual);
+	BaralhoArtefatos getBaralho(String pTipoBaralho, Integer pNumeroArtefatosAtual);
 
 }

@@ -42,9 +42,9 @@ public final class Jogo {
 
 	private static Jogo jogo;
 
-	public static enum Status {
+	public enum Status {
 		CONTINUE, WINNER_END
-	};
+	}
 
 	public static final int BARALHO_PRINCIPAL = 0;
 	public static final int BARALHO_AUXILIAR = 1;

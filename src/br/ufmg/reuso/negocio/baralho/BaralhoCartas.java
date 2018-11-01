@@ -138,7 +138,7 @@ public class BaralhoCartas
 		String[] arquivosDiretorio = repositorio.getNomeArquivosPasta(dificuldade);	
 		/**preenhendo um vetor de string com nome dos arquivos do diretorio*/
 
-		ArrayList <String> somenteArquivosProperties = new ArrayList <String>();;
+		ArrayList <String> somenteArquivosProperties = new ArrayList <String>();
 		for (int i=0;i<arquivosDiretorio.length;i++)
 		{
 			if((arquivosDiretorio[i].endsWith(".properties"))&&(selecionarCartaConceito(cartasConceitoSelecionadas,arquivosDiretorio[i])==true))/**testando se arquivo do diretório é .properties e se carta foi selecionada*/
@@ -157,7 +157,7 @@ public class BaralhoCartas
 				/**
 				 * Reuso de Software 2016 - Código Modificado
 				 */
-				cartaconceito[i] = repositorio.obterCartaConceito(dificuldade + File.separator + somenteArquivosProperties.get(i));; 	
+				cartaconceito[i] = repositorio.obterCartaConceito(dificuldade + File.separator + somenteArquivosProperties.get(i));
 
 
 			}
@@ -201,7 +201,7 @@ public class BaralhoCartas
 		 */
 		String[] arquivosDiretorio = repositorio.getNomeArquivosPasta(dificuldade);							//preenhendo um vetor de string com nome dos arquivos do diretorio
 
-		ArrayList <String> somenteArquivosProperties = new ArrayList <String>();;
+		ArrayList <String> somenteArquivosProperties = new ArrayList <String>();
 		for (int i=0;i<arquivosDiretorio.length;i++)
 		{
 			if((arquivosDiretorio[i].endsWith(".properties"))&&(selecionarCartaProblema(cartasProblemaSelecionadas,arquivosDiretorio[i])==true))/**testando se arquivo do diretório é .properties e se carta foi selecionada*/
@@ -259,7 +259,7 @@ public class BaralhoCartas
 		 */
 		String[] arquivosDiretorio = repositorio.getNomeArquivosPasta(dificuldade);	
 
-		ArrayList <String> somenteArquivosProperties = new ArrayList <String>();;
+		ArrayList <String> somenteArquivosProperties = new ArrayList <String>();
 		for (int i=0;i<arquivosDiretorio.length;i++)
 		{
 			if(arquivosDiretorio[i].endsWith(".properties"))					/**testando se arquivo do diretório é .properties*/
