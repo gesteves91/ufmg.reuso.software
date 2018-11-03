@@ -31,7 +31,8 @@ public class Jogador
 	
 	private Carta[] cartas = new Carta[NUMERO_MAX_CARTAS_MAO];				//conjunto de cartas na mao do jogador 
 	private int numeroCartasMaoAtual;										//numero real de cartas em mãos no decorrer do jogo
-	
+
+	Dado instance =  Dado.getInstance();
 	
 	public Jogador (String nomeJogador, int orcamentoInicial)
 	{
@@ -93,7 +94,7 @@ public class Jogador
 	public int analisarPontuacao()
 	{
 		int numberCards;
-		numberCards = Dado.contarPontos();
+		numberCards = instance.contarPontos();
 		Jogo.getJogo().setupController.mostrarPontosObtidosInicial(numberCards);				/**exibe a Gui mostrando pontos obtidos pelo jogador no lançamento de dados*/
 		
 		if ((getNumeroCartasMaoAtual() + numberCards) <= NUMERO_MAX_CARTAS_MAO)

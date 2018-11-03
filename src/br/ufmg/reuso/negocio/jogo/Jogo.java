@@ -44,7 +44,7 @@ public final class Jogo {
 
 	public enum Status {
 		CONTINUE, WINNER_END
-	}
+	};
 
 	public static final int BARALHO_PRINCIPAL = 0;
 	public static final int BARALHO_AUXILIAR = 1;
@@ -66,6 +66,10 @@ public final class Jogo {
 	private BaralhoArtefatosBons[] baralhoArtefatosBons;
 	private BaralhoArtefatosRuins[] baralhoArtefatosRuins;
 	public SetupInteraction setupController = ScreenInteraction.getScreenInteraction();
+
+	private Context context;
+
+	Dado instance =  Dado.getInstance();
 
 	private Jogo() {
 	}
@@ -157,21 +161,24 @@ public final class Jogo {
 																			// string
 		switch (dificuldade) {
 		case 1:
-			configurarJogo(FACIL, nomeJogadores, 
+			context = new Context(new EasyDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito, 
 					//#endif
 					cartasProblema);
 			break;
 		case 2:
-			configurarJogo(MODERADO, nomeJogadores, 
+			context = new Context(new MediumDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito, 
 					//#endif
 					cartasProblema);
 			break;
 		case 3:
-			configurarJogo(DIFICIL, nomeJogadores, 
+			context = new Context(new HardDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito,
 					//#endif
@@ -335,7 +342,7 @@ public final class Jogo {
 			// usuario
 			setupController.pedirRolarDadosInicial(jogadores[i].getNome());
 
-			pontuacaoJogador[i] = Dado.sortearValor(); // jogando dados e
+			pontuacaoJogador[i] = instance.sortearValor(); // jogando dados e
 														// guardando os pontos
 														// do jogadores
 
@@ -358,7 +365,7 @@ public final class Jogo {
 				// passando o nome do jogador i para que a GUI exiba o nome dele
 				// pedindo nova rolagem de dados devido e empate.
 				setupController.mostrarEmpatePontosObtidosInicial(jogadores[i].getNome());
-				pontuacaoJogador[i] = Dado.sortearValor(); // tenta desempatar a
+				pontuacaoJogador[i] = instance.sortearValor(); // tenta desempatar a
 															// pontuacao obtida
 			}
 
