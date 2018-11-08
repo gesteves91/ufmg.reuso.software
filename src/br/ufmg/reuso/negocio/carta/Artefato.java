@@ -43,7 +43,7 @@ public class Artefato
 	 */
 	public void mostrarArtefato()
 	{
-		System.out.printf("QualidadeRuim: %s\nBugExistente: %s\n",qualidadeArtefatoRuim,bug);
+		System.out.printf("QualidadeRuim: %s%nBugExistente: %s%n",qualidadeArtefatoRuim,bug);
 	}
 	
 	public boolean isBug() 
@@ -77,9 +77,9 @@ public class Artefato
 	}
 	
 	// implementacao para o padrao de projeto State
-	public void obtemEstado()
-	{
-		estado.getEstado(this);
-	}
+	//public void obtemEstado()
+	//{
+    // 		estado.getEstado(this);
+	//}
 	
 }

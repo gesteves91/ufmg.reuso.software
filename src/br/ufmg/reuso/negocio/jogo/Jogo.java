@@ -42,7 +42,7 @@ public final class Jogo {
 
 	private static Jogo jogo;
 
-	public static enum Status {
+	public enum Status {
 		CONTINUE, WINNER_END
 	};
 
@@ -66,6 +66,10 @@ public final class Jogo {
 	private BaralhoArtefatosBons[] baralhoArtefatosBons;
 	private BaralhoArtefatosRuins[] baralhoArtefatosRuins;
 	public SetupInteraction setupController = ScreenInteraction.getScreenInteraction();
+
+	private Context context;
+
+	Dado instance =  Dado.getInstance();
 
 	private Jogo() {
 	}
@@ -157,21 +161,24 @@ public final class Jogo {
 																			// string
 		switch (dificuldade) {
 		case 1:
-			configurarJogo(FACIL, nomeJogadores, 
+			context = new Context(new EasyDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito, 
 					//#endif
 					cartasProblema);
 			break;
 		case 2:
-			configurarJogo(MODERADO, nomeJogadores, 
+			context = new Context(new MediumDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito, 
 					//#endif
 					cartasProblema);
 			break;
 		case 3:
-			configurarJogo(DIFICIL, nomeJogadores, 
+			context = new Context(new HardDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito,
 					//#endif
@@ -349,7 +356,7 @@ public final class Jogo {
 			// usuario
 			setupController.pedirRolarDadosInicial(jogadores[i].getNome());
 
-			pontuacaoJogador[i] = Dado.sortearValor(); // jogando dados e
+			pontuacaoJogador[i] = instance.sortearValor(); // jogando dados e
 														// guardando os pontos
 														// do jogadores
 
@@ -372,7 +379,7 @@ public final class Jogo {
 				// passando o nome do jogador i para que a GUI exiba o nome dele
 				// pedindo nova rolagem de dados devido e empate.
 				setupController.mostrarEmpatePontosObtidosInicial(jogadores[i].getNome());
-				pontuacaoJogador[i] = Dado.sortearValor(); // tenta desempatar a
+				pontuacaoJogador[i] = instance.sortearValor(); // tenta desempatar a
 															// pontuacao obtida
 			}
 
@@ -528,12 +535,12 @@ public final class Jogo {
 			jogador.retirarCarta(cartasRetiradas[i]);
 			baralhoCartas[BARALHO_AUXILIAR].recolherCarta(cartasRetiradas[i]);
 		}
-		System.out.printf("\nMetodo retirarCarta\n"); // TODO so pra teste
+		System.out.printf("%nMetodo retirarCarta%n"); // TODO so pra teste
 		jogador.mostrarCartaMao();
 		/*************/
 		// TODO so pra teste -> mostra carta restante do jogador
 
-		System.out.printf("\nbaralho auxiliar:\n"); // TODO teste para ver
+		System.out.printf("%nbaralho auxiliar:%n"); // TODO teste para ver
 													// baralho auxiliar
 													// funiconando
 		// baralhoCartas[BARALHO_AUXILIAR].mostrarBaralho(); //TODO teste para
@@ -556,7 +563,7 @@ public final class Jogo {
 			/** se pode demitir engenheiro */
 			baralhoCartas[BARALHO_AUXILIAR].recolherCarta(engenheiroDemitido);
 
-		System.out.printf("engenheiro ainda contratados, demitidos nao consta na lista:\n");// TODO
+		System.out.printf("engenheiro ainda contratados, demitidos nao consta na lista:%n");// TODO
 																							// teste
 		mostrarCartasDasMesasDoTabuleiro(jogador);
 
@@ -576,7 +583,7 @@ public final class Jogo {
 				continue; // TODO teste
 			else // TODO TESTE
 			{ // TODO teste
-				System.out.printf("engenheiros contratados:\n");// TODO teste
+				System.out.printf("engenheiros contratados:%n");// TODO teste
 				jogador.getTabuleiro().getMesas()[i].getCartaMesa().mostrarCarta(); // utilizado
 																					// para
 																					// mostrar
@@ -620,7 +627,7 @@ public final class Jogo {
 			return jogador;
 		} else // ha pedido valido
 		{
-			System.out.printf("tem pedido valido\n");
+			System.out.printf("tem pedido valido%n");
 
 			int numeroArtefatoBons = pedido[Mesa.ARTEFATOS_BONS].somatorioModulo();
 			int numeroArtefatosRuins = pedido[Mesa.ARTEFATOS_RUINS].somatorioModulo();
@@ -698,7 +705,7 @@ public final class Jogo {
 			return jogador;
 		} else // TODO ha pedido valido
 		{
-			System.out.printf("tem pedido valido\n");
+			System.out.printf("tem pedido valido%n");
 
 			int numeroArtefatoBons = pedido[Mesa.ARTEFATOS_BONS].somatorioModulo();
 			int numeroArtefatosRuins = pedido[Mesa.ARTEFATOS_RUINS].somatorioModulo();
@@ -776,7 +783,7 @@ public final class Jogo {
 			return jogador;
 		} else // ha pedido valido
 		{
-			System.out.printf("tem pedido valido\n");
+			System.out.printf("tem pedido valido%n");
 
 			int numeroArtefatoBons = pedido[Mesa.ARTEFATOS_BONS].somatorioModulo();
 			int numeroArtefatosRuins = pedido[Mesa.ARTEFATOS_RUINS].somatorioModulo();
@@ -1536,6 +1543,8 @@ public final class Jogo {
 		case (CardsConstants.UNIZING_COMPONENT_NOW): {
 			int mesa = setupController.escolherMesaNeutralizaComponente();
 			jogador.getTabuleiro().getMesas()[mesa].setEfeitoModuloIntegradoNeutralizado(true);
+			// Not completely sure about it.
+			break;
 		}
 		case (CardsConstants.UNIZING_COMPONENT_VALIDATION_PHASE): {
 			jogador.getTabuleiro().setEfeitoModuloIntegradoNeutralizadoValidacao(true);
@@ -2695,8 +2704,8 @@ public final class Jogo {
 			retirarTodosArtefatos(jogadorAlvo, mesa, Mesa.ARTEFATOS_CODIGO);
 			break;
 		}
-		// default: /**nao havera essa opcao, mas a colocamos por seguranca*/
-		// break;
+		default: /**nao havera essa opcao, mas a colocamos por seguranca*/
+		    break;
 		}
 		switch (cartaUtilizada
 				.getTipoSegundoEfeito()) /**
