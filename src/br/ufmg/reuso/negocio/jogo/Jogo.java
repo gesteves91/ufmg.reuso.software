@@ -187,7 +187,6 @@ public final class Jogo {
 		}
 		gameStatus = Status.CONTINUE;
 	}
-
 	public void start(Jogo jogoAtual) {
 		int jogador = 0;
 		jogo.init();
@@ -231,6 +230,21 @@ public final class Jogo {
 
 		// sortearProjeto(facilidade);
 		projeto = new CartaoProjeto(facilidade);
+
+		//Apoio para o AspectJ :: Pedro
+		Modulo[] m_aux = this.projeto.getModulos();
+		int tamanho;
+		tamanho = m_aux.length;
+		if(tamanho == 1)
+		    projeto.retornaModulos(m_aux[0]);
+		if(tamanho == 2)
+            projeto.retornaModulos(m_aux[0], m_aux[1]);
+        if(tamanho == 3)
+            projeto.retornaModulos(m_aux[0],m_aux[1],m_aux[2]);
+        if(tamanho == 4)
+            projeto.retornaModulos(m_aux[0],m_aux[1],m_aux[2],m_aux[3]);
+        if(tamanho == 5)
+            projeto.retornaModulos(m_aux[0],m_aux[1],m_aux[2],m_aux[3],m_aux[4]);
 
 		// formarBaralhoCarta(facilidade,cartasConceito,cartasProblema);
 		this.baralhoCartas[BARALHO_PRINCIPAL] = new BaralhoCartas(facilidade, 
@@ -806,34 +820,19 @@ public final class Jogo {
 		System.out.println(
 				"habilidade do engenheiro que vai trabalhar(confere qual mesa trabalhara): " + habilidadeTemporaria);
 
-		for (int i = 0; i < jogador.getTabuleiro()
-				.getMesas().length; i++) /**
-											 * 
-											 * 
-											 * verifica se o modulo ja foi
-											 * integrado
-											 */
-		{
-			if (jogador.getTabuleiro().getMesas()[i].getEspecificacaoModuloIntegrado() == moduloEscolhido) {
-				setupController.exibirModuloJaIntegrado(i + 1);
-				return jogador;
-			}
-		}
+        boolean integracao = true;
 
-		if (engenheiroCorrigindo.isEngenheiroTrabalhouNestaRodada() == true) {
-			setupController.exibirEngenheiroNaoIntegra();
-			return jogador;
-		}
+        /**Valida se a integração solicitada é possível neste instante de tempo **/
+        integracao = validaIntegracao(jogador,engenheiroCorrigindo,mesaTrabalho,moduloEscolhido,artefatosEscolhidos, habilidadeTemporaria);
 
-		if (conferirQuantidadeArtefatosSuficiente(jogador, projeto, mesaTrabalho, moduloEscolhido,
-				artefatosEscolhidos) == false) {
-			setupController.exibirQuantidadeArtefatosInsuficientes();
-			return jogador;
-		}
-		if (habilidadeTemporaria <= 0) {
-			setupController.exibirHabilidadeInsuficiente();
-			return jogador;
-		}
+        if(integracao == false)
+        {
+            return jogador;
+        }
+        else
+        {
+            jogador.retornaJogadorIntegrado(jogador);
+        }
 
 		ScreenInteraction.getScreenInteraction().exibirMensagem("Modulo com integracao valida", "Integracaod e modulo");
 
@@ -853,6 +852,51 @@ public final class Jogo {
 		return jogador;
 
 	}
+
+    public boolean validaIntegracao(Jogador jogador, CartaEngenheiro engenheiroCorrigindo, int mesaTrabalho, int moduloEscolhido, int[][] artefatosEscolhidos,
+                                    int habilidadeTemporaria)
+    {
+        System.out.println("Iniciando validação da integração de mesa");
+        for (int i = 0; i < jogador.getTabuleiro()
+                .getMesas().length; i++) /**
+         *
+         *
+         * verifica se o modulo ja foi
+         * integrado
+         */
+        {
+            if (jogador.getTabuleiro().getMesas()[i].getEspecificacaoModuloIntegrado() == moduloEscolhido) {
+                if(moduloEscolhido == -1)
+                {
+                    setupController.exibirModuloNaoSelecionado();
+                }
+                else
+                {
+                    setupController.exibirModuloJaIntegrado(i + 1);
+                }
+                return false;
+            }
+        }
+
+        if (engenheiroCorrigindo.isEngenheiroTrabalhouNestaRodada() == true) {
+            setupController.exibirEngenheiroNaoIntegra();
+            return false;
+        }
+
+        if (conferirQuantidadeArtefatosSuficiente(jogador, projeto, mesaTrabalho, moduloEscolhido,
+                artefatosEscolhidos) == false) {
+            setupController.exibirQuantidadeArtefatosInsuficientes();
+            return false;
+        }
+        if (habilidadeTemporaria <= 0) {
+            setupController.exibirHabilidadeInsuficiente();
+            return false;
+        }
+        return false;
+    }
+
+
+
 
 	public boolean conferirQuantidadeArtefatosSuficiente(Jogador jogador, CartaoProjeto projeto, int mesaTrabalho,
 			int moduloEscolhido, int[][] artefatosEscolhidos) {

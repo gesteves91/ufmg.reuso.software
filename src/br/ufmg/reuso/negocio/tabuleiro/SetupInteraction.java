@@ -81,17 +81,13 @@ int escolherMesaNeutralizaComponente(); //TODO juntar essas função de mesa
 	int escolherMesadeTrabalho();								/**exibe GUI para jogador escolher mesa na qual o engenheiro deve trabalhar
 	 * @param modulos */
 
-int escolherModuloProjeto(Modulo[] modulos); 	/**exibe GUI ,com cartão de projeto, para jogador escolher qual módulo do cartão de projeto o engenheiro deve integrar*/
+	public void exibirHabilidadeInsuficiente(); /**exibe GUI informaando que engenheiro deve ter habilidade >=1 para integrar módulo do projeto escolhido*/
+	
+	public void exibirModuloJaIntegrado(int mesa); 		/**exibe GUI informado que o modulo já foi integrado*/
 
-void exibirEngenheiroNaoIntegra();	/**exibe GUI informando que engenheiro não pode integrar artefatos pois ele trabalhou naquela roodada*/
+	public void exibirModuloNaoSelecionado();	/**Exibe GUI informando que o módulo para integração não foi selecionado**/
 
-void exibirQuantidadeArtefatosInsuficientes(); /**exibe GUI informaando que qualquer combinação de artefatos da mesa do jogador não coincide com a combinação de artefatos do módulo do projeto escolhido*/
-
-void exibirHabilidadeInsuficiente(); /**exibe GUI informaando que engenheiro deve ter habilidade >=1 para integrar módulo do projeto escolhido*/
-
-void exibirModuloJaIntegrado(int mesa); 		/**exibe GUI informado que o modulo já foi integrado*/
-
-void habilitarTrocarModuloIntegrado(int mesaTrabalho); /**habilita função do engenheiro da mesaTrabalho para trocar modulo integrado de mesa*/
+	public void habilitarTrocarModuloIntegrado(int mesaTrabalho); /**habilita função do engenheiro da mesaTrabalho para trocar modulo integrado de mesa*/
 
 void exibirMesaModulo();				/**exibe GUI informando que a mesa já contém módulo integrado*/
 
