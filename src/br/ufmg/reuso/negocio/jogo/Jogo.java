@@ -42,7 +42,7 @@ public final class Jogo {
 
 	private static Jogo jogo;
 
-	public static enum Status {
+	public enum Status {
 		CONTINUE, WINNER_END
 	};
 
@@ -66,6 +66,10 @@ public final class Jogo {
 	private BaralhoArtefatosBons[] baralhoArtefatosBons;
 	private BaralhoArtefatosRuins[] baralhoArtefatosRuins;
 	public SetupInteraction setupController = ScreenInteraction.getScreenInteraction();
+
+	private Context context;
+
+	Dado instance =  Dado.getInstance();
 
 	private Jogo() {
 	}
@@ -157,21 +161,24 @@ public final class Jogo {
 																			// string
 		switch (dificuldade) {
 		case 1:
-			configurarJogo(FACIL, nomeJogadores, 
+			context = new Context(new EasyDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito, 
 					//#endif
 					cartasProblema);
 			break;
 		case 2:
-			configurarJogo(MODERADO, nomeJogadores, 
+			context = new Context(new MediumDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito, 
 					//#endif
 					cartasProblema);
 			break;
 		case 3:
-			configurarJogo(DIFICIL, nomeJogadores, 
+			context = new Context(new HardDifficult());
+			configurarJogo(context.executeStrategy(), nomeJogadores,
 					//#ifdef ConceptCard
 					cartasConceito,
 					//#endif
@@ -180,7 +187,6 @@ public final class Jogo {
 		}
 		gameStatus = Status.CONTINUE;
 	}
-
 	public void start(Jogo jogoAtual) {
 		int jogador = 0;
 		jogo.init();
@@ -224,6 +230,21 @@ public final class Jogo {
 
 		// sortearProjeto(facilidade);
 		projeto = new CartaoProjeto(facilidade);
+
+		//Apoio para o AspectJ :: Pedro
+		Modulo[] m_aux = this.projeto.getModulos();
+		int tamanho;
+		tamanho = m_aux.length;
+		if(tamanho == 1)
+		    projeto.retornaModulos(m_aux[0]);
+		if(tamanho == 2)
+            projeto.retornaModulos(m_aux[0], m_aux[1]);
+        if(tamanho == 3)
+            projeto.retornaModulos(m_aux[0],m_aux[1],m_aux[2]);
+        if(tamanho == 4)
+            projeto.retornaModulos(m_aux[0],m_aux[1],m_aux[2],m_aux[3]);
+        if(tamanho == 5)
+            projeto.retornaModulos(m_aux[0],m_aux[1],m_aux[2],m_aux[3],m_aux[4]);
 
 		// formarBaralhoCarta(facilidade,cartasConceito,cartasProblema);
 		this.baralhoCartas[BARALHO_PRINCIPAL] = new BaralhoCartas(facilidade, 
@@ -335,7 +356,7 @@ public final class Jogo {
 			// usuario
 			setupController.pedirRolarDadosInicial(jogadores[i].getNome());
 
-			pontuacaoJogador[i] = Dado.sortearValor(); // jogando dados e
+			pontuacaoJogador[i] = instance.sortearValor(); // jogando dados e
 														// guardando os pontos
 														// do jogadores
 
@@ -358,7 +379,7 @@ public final class Jogo {
 				// passando o nome do jogador i para que a GUI exiba o nome dele
 				// pedindo nova rolagem de dados devido e empate.
 				setupController.mostrarEmpatePontosObtidosInicial(jogadores[i].getNome());
-				pontuacaoJogador[i] = Dado.sortearValor(); // tenta desempatar a
+				pontuacaoJogador[i] = instance.sortearValor(); // tenta desempatar a
 															// pontuacao obtida
 			}
 
@@ -514,12 +535,12 @@ public final class Jogo {
 			jogador.retirarCarta(cartasRetiradas[i]);
 			baralhoCartas[BARALHO_AUXILIAR].recolherCarta(cartasRetiradas[i]);
 		}
-		System.out.printf("\nMetodo retirarCarta\n"); // TODO so pra teste
+		System.out.printf("%nMetodo retirarCarta%n"); // TODO so pra teste
 		jogador.mostrarCartaMao();
 		/*************/
 		// TODO so pra teste -> mostra carta restante do jogador
 
-		System.out.printf("\nbaralho auxiliar:\n"); // TODO teste para ver
+		System.out.printf("%nbaralho auxiliar:%n"); // TODO teste para ver
 													// baralho auxiliar
 													// funiconando
 		// baralhoCartas[BARALHO_AUXILIAR].mostrarBaralho(); //TODO teste para
@@ -542,7 +563,7 @@ public final class Jogo {
 			/** se pode demitir engenheiro */
 			baralhoCartas[BARALHO_AUXILIAR].recolherCarta(engenheiroDemitido);
 
-		System.out.printf("engenheiro ainda contratados, demitidos nao consta na lista:\n");// TODO
+		System.out.printf("engenheiro ainda contratados, demitidos nao consta na lista:%n");// TODO
 																							// teste
 		mostrarCartasDasMesasDoTabuleiro(jogador);
 
@@ -562,7 +583,7 @@ public final class Jogo {
 				continue; // TODO teste
 			else // TODO TESTE
 			{ // TODO teste
-				System.out.printf("engenheiros contratados:\n");// TODO teste
+				System.out.printf("engenheiros contratados:%n");// TODO teste
 				jogador.getTabuleiro().getMesas()[i].getCartaMesa().mostrarCarta(); // utilizado
 																					// para
 																					// mostrar
@@ -606,7 +627,7 @@ public final class Jogo {
 			return jogador;
 		} else // ha pedido valido
 		{
-			System.out.printf("tem pedido valido\n");
+			System.out.printf("tem pedido valido%n");
 
 			int numeroArtefatoBons = pedido[Mesa.ARTEFATOS_BONS].somatorioModulo();
 			int numeroArtefatosRuins = pedido[Mesa.ARTEFATOS_RUINS].somatorioModulo();
@@ -684,7 +705,7 @@ public final class Jogo {
 			return jogador;
 		} else // TODO ha pedido valido
 		{
-			System.out.printf("tem pedido valido\n");
+			System.out.printf("tem pedido valido%n");
 
 			int numeroArtefatoBons = pedido[Mesa.ARTEFATOS_BONS].somatorioModulo();
 			int numeroArtefatosRuins = pedido[Mesa.ARTEFATOS_RUINS].somatorioModulo();
@@ -762,7 +783,7 @@ public final class Jogo {
 			return jogador;
 		} else // ha pedido valido
 		{
-			System.out.printf("tem pedido valido\n");
+			System.out.printf("tem pedido valido%n");
 
 			int numeroArtefatoBons = pedido[Mesa.ARTEFATOS_BONS].somatorioModulo();
 			int numeroArtefatosRuins = pedido[Mesa.ARTEFATOS_RUINS].somatorioModulo();
@@ -799,34 +820,19 @@ public final class Jogo {
 		System.out.println(
 				"habilidade do engenheiro que vai trabalhar(confere qual mesa trabalhara): " + habilidadeTemporaria);
 
-		for (int i = 0; i < jogador.getTabuleiro()
-				.getMesas().length; i++) /**
-											 * 
-											 * 
-											 * verifica se o modulo ja foi
-											 * integrado
-											 */
-		{
-			if (jogador.getTabuleiro().getMesas()[i].getEspecificacaoModuloIntegrado() == moduloEscolhido) {
-				setupController.exibirModuloJaIntegrado(i + 1);
-				return jogador;
-			}
-		}
+        boolean integracao = true;
 
-		if (engenheiroCorrigindo.isEngenheiroTrabalhouNestaRodada() == true) {
-			setupController.exibirEngenheiroNaoIntegra();
-			return jogador;
-		}
+        /**Valida se a integração solicitada é possível neste instante de tempo **/
+        integracao = validaIntegracao(jogador,engenheiroCorrigindo,mesaTrabalho,moduloEscolhido,artefatosEscolhidos, habilidadeTemporaria);
 
-		if (conferirQuantidadeArtefatosSuficiente(jogador, projeto, mesaTrabalho, moduloEscolhido,
-				artefatosEscolhidos) == false) {
-			setupController.exibirQuantidadeArtefatosInsuficientes();
-			return jogador;
-		}
-		if (habilidadeTemporaria <= 0) {
-			setupController.exibirHabilidadeInsuficiente();
-			return jogador;
-		}
+        if(integracao == false)
+        {
+            return jogador;
+        }
+        else
+        {
+            jogador.retornaJogadorIntegrado(jogador);
+        }
 
 		ScreenInteraction.getScreenInteraction().exibirMensagem("Modulo com integracao valida", "Integracaod e modulo");
 
@@ -846,6 +852,51 @@ public final class Jogo {
 		return jogador;
 
 	}
+
+    public boolean validaIntegracao(Jogador jogador, CartaEngenheiro engenheiroCorrigindo, int mesaTrabalho, int moduloEscolhido, int[][] artefatosEscolhidos,
+                                    int habilidadeTemporaria)
+    {
+        System.out.println("Iniciando validação da integração de mesa");
+        for (int i = 0; i < jogador.getTabuleiro()
+                .getMesas().length; i++) /**
+         *
+         *
+         * verifica se o modulo ja foi
+         * integrado
+         */
+        {
+            if (jogador.getTabuleiro().getMesas()[i].getEspecificacaoModuloIntegrado() == moduloEscolhido) {
+                if(moduloEscolhido == -1)
+                {
+                    setupController.exibirModuloNaoSelecionado();
+                }
+                else
+                {
+                    setupController.exibirModuloJaIntegrado(i + 1);
+                }
+                return false;
+            }
+        }
+
+        if (engenheiroCorrigindo.isEngenheiroTrabalhouNestaRodada() == true) {
+            setupController.exibirEngenheiroNaoIntegra();
+            return false;
+        }
+
+        if (conferirQuantidadeArtefatosSuficiente(jogador, projeto, mesaTrabalho, moduloEscolhido,
+                artefatosEscolhidos) == false) {
+            setupController.exibirQuantidadeArtefatosInsuficientes();
+            return false;
+        }
+        if (habilidadeTemporaria <= 0) {
+            setupController.exibirHabilidadeInsuficiente();
+            return false;
+        }
+        return false;
+    }
+
+
+
 
 	public boolean conferirQuantidadeArtefatosSuficiente(Jogador jogador, CartaoProjeto projeto, int mesaTrabalho,
 			int moduloEscolhido, int[][] artefatosEscolhidos) {
@@ -1492,6 +1543,8 @@ public final class Jogo {
 		case (CardsConstants.UNIZING_COMPONENT_NOW): {
 			int mesa = setupController.escolherMesaNeutralizaComponente();
 			jogador.getTabuleiro().getMesas()[mesa].setEfeitoModuloIntegradoNeutralizado(true);
+			// Not completely sure about it.
+			break;
 		}
 		case (CardsConstants.UNIZING_COMPONENT_VALIDATION_PHASE): {
 			jogador.getTabuleiro().setEfeitoModuloIntegradoNeutralizadoValidacao(true);
@@ -2651,8 +2704,8 @@ public final class Jogo {
 			retirarTodosArtefatos(jogadorAlvo, mesa, Mesa.ARTEFATOS_CODIGO);
 			break;
 		}
-		// default: /**nao havera essa opcao, mas a colocamos por seguranca*/
-		// break;
+		default: /**nao havera essa opcao, mas a colocamos por seguranca*/
+		    break;
 		}
 		switch (cartaUtilizada
 				.getTipoSegundoEfeito()) /**

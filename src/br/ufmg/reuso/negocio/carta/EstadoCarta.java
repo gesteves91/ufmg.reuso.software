@@ -16,7 +16,7 @@ package br.ufmg.reuso.negocio.carta;
 
 public interface EstadoCarta {
 	
-	public boolean getEstado(Artefato carta);
+	boolean getEstado(Artefato carta);
 	
-	public void setEstado(Artefato carta);
+	void setEstado(Artefato carta);
 }

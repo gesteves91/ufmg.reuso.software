@@ -31,7 +31,8 @@ public class Jogador
 	
 	private Carta[] cartas = new Carta[NUMERO_MAX_CARTAS_MAO];				//conjunto de cartas na mao do jogador 
 	private int numeroCartasMaoAtual;										//numero real de cartas em mãos no decorrer do jogo
-	
+
+	Dado instance =  Dado.getInstance();
 	
 	public Jogador (String nomeJogador, int orcamentoInicial)
 	{
@@ -93,7 +94,7 @@ public class Jogador
 	public int analisarPontuacao()
 	{
 		int numberCards;
-		numberCards = Dado.contarPontos();
+		numberCards = instance.contarPontos();
 		Jogo.getJogo().setupController.mostrarPontosObtidosInicial(numberCards);				/**exibe a Gui mostrando pontos obtidos pelo jogador no lançamento de dados*/
 		
 		if ((getNumeroCartasMaoAtual() + numberCards) <= NUMERO_MAX_CARTAS_MAO)
@@ -148,7 +149,7 @@ public class Jogador
 	
 	public void mostrarCartaMao()   /********************/			//TODO usado só pra teste
 	{
-		System.out.printf("Cartas do jogador %s:\n",getNome());
+		System.out.printf("Cartas do jogador %s:%n",getNome());
 		for (int i=0;i<NUMERO_MAX_CARTAS_MAO;i++)
 		{
 			if (cartas[i]==null)
@@ -228,6 +229,11 @@ public class Jogador
 	public void setDadoJogado(boolean dadoJogado) 
 	{
 		this.dadoJogado = dadoJogado;
+	}
+
+	public void retornaJogadorIntegrado(Jogador jogador)
+	{
+
 	}
 	
 }
